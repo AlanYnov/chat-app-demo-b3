@@ -34,12 +34,47 @@ cd chat-app-angular-firebase
 npm install
 ```
 
+### 3. Corriger la dépendance fire
+
+Modifier les interfaces **DatabaseSnapshotExists** et **DatabaseSnapshotDoesNotExist** dans :
+**\node_modules\@angular\fire\compat\database\interfaces.d.ts**
+
+```js
+export interface DatabaseSnapshotExists<T> extends firebase.database.DataSnapshot {
+  exists(): true;
+  val(): T;
+  // forEach(action: (a: DatabaseSnapshot<T>) => boolean): boolean;
+  forEach(action: (a: firebase.database.DataSnapshot & { key: string }) => boolean | void): boolean;
+}
+export interface DatabaseSnapshotDoesNotExist<T> extends firebase.database.DataSnapshot {
+  exists(): false;
+  val(): null;
+  // forEach(action: (a: DatabaseSnapshot<T>) => boolean): boolean;
+  forEach(action: (a: firebase.database.DataSnapshot & { key: string }) => boolean | void): boolean;
+}
+```
+
 ### 3. Configuration de Firebase
 
 - Rendez-vous sur [Firebase Console](https://console.firebase.google.com/) et créez un nouveau projet Firebase
 - Activez **Firebase Authentication** (méthode Email/Password).
 - Activez **Realtime Database** pour stocker les messages en temps réel.
 - Configurez votre application Web dans Firebase et copiez la configuration Firebase dans votre environnement.
+
+```js
+export const environment = {
+    firebase: {
+        apiKey: "",
+        authDomain: "",
+        databaseURL: "",
+        projectId: "",
+        storageBucket: "",
+        messagingSenderId: "",
+        appId: "",
+        measurementId: ""
+      }
+};
+```
 
 #### 4. Lancez l'application
 
